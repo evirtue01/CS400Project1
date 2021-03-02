@@ -15,7 +15,7 @@ Files Written by Me:
 Additional Contributions:
 -------------------------
  - Helped backend developer understand my code
- -
+ - Helped other data wrangler to figure out how to parse double quotes in .csv
 
 Signature:
 ----------
