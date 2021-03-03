@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-
 public class Frontend {
     
     private static String baseHeader =
@@ -59,21 +58,13 @@ public class Frontend {
             String input = "";
             // app loop
             while (!done) {
-                if (input.isBlank() || input != "x") {
+                // if no input print default screen
+                if (input.isBlank() || input.contentEquals("x")) {
                     printBaseMenu(1);
-                } else {
-                    printBaseMenu(Integer.parseInt(input));
                 }
                 input = scnr.next();
                 switch (input) {
-                    default:
-                        int inputInt = Integer.parseInt(input);
-                        if (inputInt < 0 || inputInt > (b.getNumberOfMovies() - 1)) {
-                            System.out.println("That is not a valid command");
-                            break;
-                        }
-                        printBaseMenu(inputInt);
-                        break;
+
                     case "g":
                         printGenreMenu();
                         input = scnr.next();
@@ -96,33 +87,50 @@ public class Frontend {
                             input = scnr.next();   
                         }
                         break;
+                        
                     case "r":
                         printRatingsMenu();
                         input = scnr.next();
                         while (!input.contentEquals("x")) {
-                            List<String> selRatings = b.getAvgRatings();
+                         // get selected rating from list and get selected rating
+                            List<String> selRatings = b.getAvgRatings();                            
                             int i = (int) Double.parseDouble(input);
-                            String currRating = allRatings.get(i);
-                            int inputRating = currRating.charAt(0);
-                            // loop through selected genre list
-                            for (int j = 0; j < selRatings.size(); j++) {
-                                String selRatingString = selRatings.get(j);
-                                int selRating = selRatingString.charAt(0);
-                                // if in the selected list deselect otherwise add to selected list
-                                if (inputRating > selRating && inputRating < (selRating + .99)  ) {
-                                    b.removeAvgRating(input);
-                                } else {
-                                    b.addAvgRating(input);
-                                }
+                            String rating = allRatings.get(i);
+                            char char0 = rating.charAt(0);
+                            String chosenRating = String.valueOf(char0);
+                         // loop through selected rating list 
+                            if (selRatings.size() == 0 || selRatings == null) {
+                                b.addAvgRating(input);
+                                printRatingsMenu();
+                                input = scnr.next();
+                                continue;
                             }
-                            printGenreMenu();
+                            
+                            // if in the selected list deselect otherwise add to selected list
+                            if (b.containsRating(chosenRating)) {
+                                b.removeAvgRating(input);
+                            } else {
+                                b.addAvgRating(input);
+                            }                                
+                            
+                            printRatingsMenu();
                             input = scnr.next();   
                         }
                         break;
+                        
                     case "x":
                         System.out.println("Goodbye!");
                         scnr.close();
                         done = true;
+                        break;
+                        
+                    default:                        
+                        int inputInt = Integer.parseInt(input);
+                        if (inputInt < 0 || inputInt > (b.getNumberOfMovies() - 1)) {
+                            System.out.println("That is not a valid command");
+                            break;
+                        }
+                        printBaseMenu(inputInt);
                         break;
                 }
             }
@@ -137,6 +145,10 @@ public class Frontend {
      * Prints the base menu for the program
      */
     public static void printBaseMenu(int index) {
+        // test--
+        List<MovieInterface> movies1 = b.getThreeMovies((5));
+        List<MovieInterface> movies2 = b.getThreeMovies((10));
+
         // print header
         System.out.print(baseHeader);
         
@@ -173,14 +185,16 @@ public class Frontend {
         List<String> allGenres = b.getAllGenres();
         List<String> selGenres = b.getGenres();
         int numSel = selGenres.size();
+        int numGenres = allGenres.size();
         for (int i = 0; i < allGenres.size(); i++) {
-            for (int j = 0; j < selGenres.size(); j++) {
-                if (allGenres.get(i).contains(selGenres.get(j))) {
-                    System.out.println((i + 1) + ". [x] " + allGenres.get(i));                   
-                } else {
-                    System.out.println((i + 1) + ". [ ] " + allGenres.get(i));
-                }
+            if (selGenres.contains(allGenres.get(i))) {
+                System.out.println((i + 1) + ". [x] " + allGenres.get(i));
+                continue;
+            } else {
+                System.out.println((i + 1) + ". [ ] " + allGenres.get(i));
+                continue;
             }
+            
         }
         
         // print commands
@@ -190,17 +204,15 @@ public class Frontend {
     }
 
     /**
-     * ------------ NEED TO FINISH ------------
+     * 
      * Prints the ratings menu with the selected ratings
      */
     public static void printRatingsMenu() {
         // print header
-        System.out.print(ratingsHeader);
-        
-        // print selected ratings
+        System.out.print(ratingsHeader);        
         List<String> selRatings = b.getAvgRatings();
+        // if nothing selected print empty menu
         if (selRatings.size() == 0) {
-            // if nothing selected print empty menu
             for (int x = 0; x < allRatings.size(); x++) {
                 System.out.println((x) + ". [ ] " + allRatings.get(x));
             }
@@ -208,14 +220,20 @@ public class Frontend {
             System.out.println("Enter a number to select/deselect ratings");
             return;
         }
+        // print selected ratings
         for (int i = 0; i < allRatings.size(); i++) {
             for (int j = 0; j < selRatings.size(); j++) {
-                String selected = selRatings.get(j);
-                int selRating = (int) Double.parseDouble(selected);
-                if (selRating >= i && selRating <= (i + .99)) {
-                    System.out.println(i + ". [x] " + allRatings.get(i));                   
+                // get the value of the rating at index i
+                String rating = allRatings.get(i);
+                char char0 = rating.charAt(0);
+                String iRating = String.valueOf(char0);
+                
+                if (b.containsRating(iRating)) {
+                    System.out.println(i + ". [x] " + allRatings.get(i));
+                    break;
                 } else {
                     System.out.println(i + ". [ ] " + allRatings.get(i));
+                    break;
                 }
             }
         }
