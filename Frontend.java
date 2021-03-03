@@ -103,10 +103,13 @@ public class Frontend {
                             List<String> selRatings = b.getAvgRatings();
                             int i = (int) Double.parseDouble(input);
                             String currRating = allRatings.get(i);
+                            int inputRating = currRating.charAt(0);
                             // loop through selected genre list
                             for (int j = 0; j < selRatings.size(); j++) {
+                                String selRatingString = selRatings.get(j);
+                                int selRating = selRatingString.charAt(0);
                                 // if in the selected list deselect otherwise add to selected list
-                                if (1 > 2 ) { // FIXME
+                                if (inputRating > selRating && inputRating < (selRating + .99)  ) {
                                     b.removeAvgRating(input);
                                 } else {
                                     b.addAvgRating(input);
