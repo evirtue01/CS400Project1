@@ -292,9 +292,9 @@ public class Backend implements BackendInterface{
 			if (index > movies.values.length) {
 				index = 0;
 			}
-			if (movies.values[index].size() != 0) {
-				for (int j = 0; j < movies.values[index].size(); j++) {
-					returnList.add( (MovieInterface) movies.values[index].get(j));
+			if (movies.values[i].size() != 0) {
+				for (int j = 0; j < movies.values[i].size(); j++) {
+					returnList.add( (MovieInterface) movies.values[i].get(j));
 					movieNum++;
 					if (movieNum == 3) break;
 				}
