@@ -1,7 +1,7 @@
 // --== CS400 File Header Information ==--
 // Name: Aidan Lonergan
 // Email: alonergan@wisc.edu
-// Team: blue
+// Team: red
 // Role: Front End Developer
 // TA: Sid
 // Lecturer: Gary Dahl
@@ -32,12 +32,7 @@ public class Frontend {
         "=======================\n"
       + " Rating Selection Mode \n"
       + "=======================\n"
-      + "Selected ratings are marked with a [x]\n";
-    
-    private static String detailsHeader =
-        "=======================\n"
-      + "     Movie Details     \n"
-      + "=======================\n";        
+      + "Selected ratings are marked with a [x]\n";      
 
     private static Backend b;
     
@@ -61,26 +56,23 @@ public class Frontend {
         try {
             r = new BufferedReader(new FileReader("src/movies.csv"));
             b = new Backend(r);
+            String input = "";
             // app loop
             while (!done) {
-                // print three movies and commands
-                printBaseMenu();
-                String input = scnr.next();
+                if (input.isBlank() || input != "x") {
+                    printBaseMenu(1);
+                } else {
+                    printBaseMenu(Integer.parseInt(input));
+                }
+                input = scnr.next();
                 switch (input) {
-                    case "1":                
-                    case "2":
-                    case "3":
-                        // get first three movies at index of input
-                        // the first element will be the movie selected
-                        List<MovieInterface> movies = b.getThreeMovies((Integer.parseInt(input) - 1));
-                        String movieDetails = movies.get(0).toString();
-                        while (!input.contentEquals("x")) {
-                            // print details
-                            System.out.print(detailsHeader);
-                            System.out.println(movieDetails);
-                            System.out.println("Enter 'x' to exit to return to base mode");
-                            input = scnr.next();                            
+                    default:
+                        int inputInt = Integer.parseInt(input);
+                        if (inputInt < 0 || inputInt > (b.getNumberOfMovies() - 1)) {
+                            System.out.println("That is not a valid command");
+                            break;
                         }
+                        printBaseMenu(inputInt);
                         break;
                     case "g":
                         printGenreMenu();
@@ -129,8 +121,6 @@ public class Frontend {
                         scnr.close();
                         done = true;
                         break;
-                    default:
-                        System.out.println("That is not a valid command");
                 }
             }
         } catch (FileNotFoundException e) {
@@ -143,22 +133,21 @@ public class Frontend {
     /**
      * Prints the base menu for the program
      */
-    public static void printBaseMenu() {
+    public static void printBaseMenu(int index) {
         // print header
         System.out.print(baseHeader);
         
         // print top 3 movies
-        List<MovieInterface> movies = b.getThreeMovies(0);
-        System.out.println("#\tMovie Name\tGenres\tRating");
+        List<MovieInterface> movies = b.getThreeMovies((index));
+        System.out.println("#\tName\t\tGenres\t\tRating");
         for (int i = 0; i < movies.size(); i++) {
             String name = movies.get(i).getTitle();
             List<String> genreList = movies.get(i).getGenres();
             String genres = "";
             for (int j = 0; j < genreList.size(); j++) {
-                genres = genres + genreList.get(j) + ", "; // TODO fix formatting
+                genres = genres + genreList.get(j) + " "; // TODO fix formatting
             }
             double rating = (double) movies.get(i).getAvgVote();
-            System.out.println("Printing movie");
             System.out.println(i + "\t" + name + "\t" + genres + "\t" + rating);                 
         }
         
@@ -207,14 +196,23 @@ public class Frontend {
         
         // print selected ratings
         List<String> selRatings = b.getAvgRatings();
+        if (selRatings.size() == 0) {
+            // if nothing selected print empty menu
+            for (int x = 0; x < allRatings.size(); x++) {
+                System.out.println((x) + ". [ ] " + allRatings.get(x));
+            }
+            System.out.println("Enter 'x' to return to base mode");
+            System.out.println("Enter a number to select/deselect ratings");
+            return;
+        }
         for (int i = 0; i < allRatings.size(); i++) {
             for (int j = 0; j < selRatings.size(); j++) {
                 String selected = selRatings.get(j);
                 int selRating = (int) Double.parseDouble(selected);
                 if (selRating >= i && selRating <= (i + .99)) {
-                    System.out.println((i + 1) + ". [x] " + allRatings.get(i));                   
+                    System.out.println(i + ". [x] " + allRatings.get(i));                   
                 } else {
-                    System.out.println((i + 1) + ". [ ] " + allRatings.get(i));
+                    System.out.println(i + ". [ ] " + allRatings.get(i));
                 }
             }
         }
