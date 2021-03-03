@@ -11,6 +11,7 @@
 import java.util.List;
 import java.util.zip.DataFormatException;
 import java.io.Reader;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.LinkedList;
@@ -26,6 +27,7 @@ public class Backend implements BackendInterface{
 	private List<String> genresAdded = new LinkedList<String>();
 	private List<String> ratings = new LinkedList<String>();
 	private HashTableMap movies = new HashTableMap();
+	private Reader reader;
 	
 	/**
 	 * Default constructor
@@ -62,6 +64,109 @@ public class Backend implements BackendInterface{
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * Note to anyone who uses this method: be sure to use the following format on every line for this constructor to work effectively:
+	 * <TITLE>, <YEAR>, <GENRE(S)> (don't put a comma in for multiple genres), <DIRECTOR>, <DESCRIPTION>, <AVG VOTE>
+	 * @param movieData - a list of movies, each separated by a line with the appropriate categories per the format above
+	 * @throws IOException for the scanner
+	 */
+	public Backend (String movieData) throws IOException {
+		String movieString = "";
+		String title = "";
+		
+		Scanner scanner = new Scanner(movieData);
+		while (scanner.hasNextLine()) {
+			// The movie (entire line)
+			movieString = scanner.nextLine();
+			Scanner searchMovie = new Scanner(movieString);
+			
+			// Creates title
+			title = searchMovie.next();
+			if (!title.contains(",")) {
+				String search = "";
+				while (!search.contains(",")) {
+					search = searchMovie.next();
+					title = title + " " + search;
+				}
+				title = title.substring(0, title.length() - 1);
+			} else {
+				title = title.substring(0, title.length() - 1);
+			}
+			
+			// Year
+			String yearInString = searchMovie.next();
+			yearInString = yearInString.substring(0, yearInString.length() - 1);
+			int year = 0;
+			try {
+				 year = Integer.parseInt(yearInString);
+			} catch (NumberFormatException e) {
+				year = 0;
+			}
+			
+			// Genres
+			String genre = searchMovie.next();
+			if (!genre.contains(",")) {
+				while (!genre.contains(",")) {
+					genre = genre + " " + searchMovie.next();
+				}
+			}
+			genre = genre.substring(0, genre.length() - 1);
+			List<String> movieGenres = new LinkedList();
+			movieGenres.add(genre);
+			
+			// Director
+			String director = searchMovie.next();
+			if (!director.contains(",")) {
+				while (!director.contains(",")) {
+					director = director + " " + searchMovie.next();
+				}
+			}
+			director = director.substring(0, director.length() - 1);
+			
+			// Description
+			String description = searchMovie.next();
+			if (!description.contains(",")) {
+				while (!description.contains(",")) {
+					description = description + " " + searchMovie.next();
+				}
+			}
+			description = description.substring(0, description.length() - 1);
+			
+			// Avg vote
+			String ratingInString = searchMovie.next();
+			int rating;
+			try {
+				rating = Integer.parseInt(ratingInString);
+			} catch (NumberFormatException e) {
+				rating = 0;
+			}
+			float ratingToFloat = (float) rating;
+			
+			// Creating the movie object and inserting it into the hash table
+			Movie movie = new Movie(title, year, movieGenres, director, description, ratingToFloat);
+			movies.put(ratingToFloat, movie);
+		}
+		scanner.close();
+		
+		
+		
+		/**
+		 * BufferedReader br = new BufferedReader(reader);
+		MovieDataReader reader = new MovieDataReader();
+		List<MovieInterface> s = new LinkedList();
+		try {
+			s = reader.readDataSet(br);
+		} catch (IOException | DataFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for (int i = 0; i < s.size(); i++) {
+			movies.put(s.get(i).getGenres(), s.get(i));
+		}
+		 */
 	}
 
 	/**

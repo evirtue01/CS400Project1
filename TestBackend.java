@@ -7,12 +7,22 @@
 // Lecturer: Florian
 // Notes to Grader: N/A
 
+// Imports
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
+/**
+ * This serves as the dummy class that tests the backend functionality
+ * @author Ethan McKellips
+ *
+ */
 public class TestBackend {
 
+	/**
+	 * Runs every test
+	 * @param args
+	 */
     public static void main(String[] args) {
     
        try {
@@ -22,6 +32,10 @@ public class TestBackend {
        }
     }
 
+    /**
+     * Runs every test
+     * @throws IOException
+     */
     public void runTests() throws IOException {
         // add all tests to this method
         if (this.testInitialNumberOfMovies()) {
@@ -29,7 +43,7 @@ public class TestBackend {
         } else {
             System.out.println("Test initial number of movies: FAILED");
         }
-        if (this.testGetAllGenres()) {
+        if (this.testInitialNumberOfMovies()) {
             System.out.println("Test get all genres: PASSED");
         } else {
             System.out.println("Test get all genres: FAILED");
@@ -69,6 +83,11 @@ public class TestBackend {
         } else {
             System.out.println("Test get average rating: FAILED");
         }
+        if (testStringConstructor()) {
+        	System.out.println("Test string constructor: PASSED");
+        } else {
+        	System.out.println("Test string constructor: FAILED");
+        }
     }
 
     /**
@@ -100,6 +119,15 @@ public class TestBackend {
                     return false;
     }
     }
+            
+            public boolean testStringConstructor() throws IOException {
+            	String input = "The Martian, 2016, \"Sci Fi\", Ridley Scott, A team and his crew need return to a lost astronaut alone in space, 7.3";
+            	// Test 1 - tests that no errors are made
+            	BackendInterface backendToTest = new Backend(input);
+            	
+            	
+            	return true;
+            }
 
     /**
      * This test instantiates the back end with three movies and tests whether
@@ -111,8 +139,8 @@ public class TestBackend {
         try {
             // instantiate once BackendInterface is implemented
             BackendInterface backendToTest = new Backend(new StringReader(
-                "title,original_title,year,genre,duration,country,language,director,writer,production_company,actors,description,avg_vote\n"
-                    + "The Source of Shadows,The Source of Shadows,2020,Horror,83, USA,English,n \"Ryan Bury, Jennifer Bonior\",\"Jennifer Bonior, Trevor Botkin\",Four Thieves Productions ,\"Ashleigh Allard, Tom Bonington, Eliane Gagnon, Marissa Kaye Grinestaff, Jenna Heffernan, Joshua Hum mel, Janice Kingsley Chris Labasbas, Jared Laufree, Dominic Lee, Vic May, Sienna Mazzone, Lizzie Moun ter, Grace Mumm, Ashley Otis\",\"A series of stories woven together by  one of our most primal fears, t he fear of the unknown.\",3.5\n"
+                "title,original_title,year,genre,duration,country,language,director,writer,production_company,actors,description,avg_vote \n"
+                    + "The Source of Shadows,The Source of Shadows, 2020, Horror, 83, USA, English, n \"Ryan Bury, Jennifer Bonior\", \"Jennifer Bonior, Trevor Botkin\", Four Thieves Productions, \"Ashleigh Allard, Tom Bonington, Eliane Gagnon, Marissa Kaye Grinestaff, Jenna Heffernan, Joshua Hum mel, Janice Kingsley Chris Labasbas, Jared Laufree, Dominic Lee, Vic May, Sienna Mazzone, Lizzie Moun ter, Grace Mumm, Ashley Otis\", \"A series of stories woven together by one of our most primal fears, t he fear of the unknown.\", 3.5\n"
                     + "The Insurrection,The Insurrection,2020,Action,90,USA,Englis h,Rene Perez,Rene Perez,,\"Michael Paré, Wilma Elles, Joseph Camilleri, Rebecca Tarabocchia, Jeanine H arrington, Malorie Glavan, Danner Boyd, Michael Cendejas, Woody Clendenen, Keely Dervin, Aaron Harvey, Tony Jackson, Michael Jarrod, Angelina Karo, Bernie Kelly\",The director of the largest media company wants to expose how left-wing powers use film to control populations.,2.9\n"
                     + "Valley Girl,Valley Girl,2020,\"Comedy, Musical, Romance\",102,USA,English,Rachel Lee Goldenberg,\"Amy Talkington, Andrew Lane\",Sneak Preview Productions,\" Jessi ca Rothe, Josh Whitehouse, Jessie Ennis, Ashleigh Murray, Chloe Bennet, Logan Paul, Mae Whitman, Mario Revolori, Rob Huebel, Judy Greer, Alex Lewis, Alex MacNicoll, Danny Ramirez, Andrew Kai, Allyn Rachel \",\"Set to a new wave '80s soundtrack, a pair of young lovers from different backgrounds defy their p arents and friends to stay together. A  musical adaptation of the 1983 film.\",5.4\n"));
 
@@ -165,6 +193,10 @@ public class TestBackend {
     }
 
 
+    /**
+     * Tests the functionality of the addGenre() method in the backend
+     * @return true if true, false if not
+     */
     public boolean testAddGenre() {
         try {
             BackendInterface backendToTest = new Backend(new StringReader(
@@ -220,6 +252,11 @@ public class TestBackend {
         return true;
     }
 
+    /**
+     * Tests the functionality of the testAddAvgRating functionality
+     * @return true if all tests pass, false otherwise
+     * @throws IOException
+     */
     public boolean testAddAvgRating() throws IOException {
         Backend backendToTest = new Backend(new StringReader(
             "title,original_title,year,genre,duration,country,language,director,writer,production_company,actors,description,avg_vote\n"
@@ -282,6 +319,11 @@ public class TestBackend {
         return true;
     }
 
+    /**
+     * Test that tests if the functionality of the 
+     * @return
+     * @throws IOException
+     */
     public boolean testContainsGenre() throws IOException {
         Backend backendToTest = new Backend(new StringReader(
             "title,original_title,year,genre,duration,country,language,director,writer,production_company,actors,description,avg_vote\n"
@@ -299,7 +341,6 @@ public class TestBackend {
         backendToTest.addGenre("Western");
 
 
-        // adds a multitude of genres to list and checks to see if they all are found within list
         if (!backendToTest.containsGenre("Romance")) {
             return false;
         }
@@ -307,15 +348,18 @@ public class TestBackend {
         if (!backendToTest.containsGenre("Western")) {
             return false;
         }
-        backendToTest.addGenre("Science Fiction");;
+        backendToTest.addGenre("Science Fiction");
+        
+        if (!backendToTest.containsGenre("Science Ficiton")) {
+            return false;
+        }
+        
         backendToTest.addGenre("Drama");
 
         if (!backendToTest.containsGenre("Drama")) {
             return false;
         }
-        if (!backendToTest.containsGenre("Science Ficiton")) {
-            return false;
-        }
+        
 
         backendToTest.addGenre("Comedy");
 
@@ -454,6 +498,11 @@ public class TestBackend {
         return true;
     }
 
+    /**
+     * Tests the functionality of the removeAvgRating() method in the backend class
+     * @return true if all tests pass, false otherwise
+     * @throws IOException
+     */
     public boolean testRemoveAvgRating() throws IOException {
         Backend backendToTest = new Backend(new StringReader(
 			    "title,original_title,year,genre,duration,country,language,director,writer,production_company,actors,description,avg_vote\n"
@@ -506,6 +555,11 @@ public class TestBackend {
 
     }
 
+    /**
+     * Tests the functionality of the getGenres() method
+     * @return true if all tests pass, false otherwise
+     * @throws IOException
+     */
     public boolean testGetGenres() throws IOException {
         Backend backendToTest = new Backend(new StringReader(
             "title,original_title,year,genre,duration,country,language,director,writer,production_company,actors,description,avg_vote\n"
