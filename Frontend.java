@@ -38,8 +38,8 @@ public class Frontend {
     private static List<String> allRatings;
     
     /**
-     * Main method for running the program
-     * @param args      
+     * main method for running the program with a while loop and switch statement
+     *     
      */
     public static void main(String[] args) {
         // initialize input
@@ -72,17 +72,24 @@ public class Frontend {
                             // get selected genre
                             List<String> allGenres = b.getAllGenres();
                             List<String> selGenres = b.getGenres();
-                            int i = Integer.parseInt(input) + 1;
+                            int i = Integer.parseInt(input) - 1;
                             String currGenre = allGenres.get(i);
-                            // loop through selected genre list
-                            for (int j = 0; j < selGenres.size(); j++) {
-                                // if in the selected list deselect otherwise add to selected list
-                                if (currGenre.equalsIgnoreCase(selGenres.get(j))) {
-                                    b.removeGenre(currGenre);
-                                } else {
-                                    b.addGenre(currGenre);
-                                }
+                            
+                            // loop through selected rating list 
+                            if (selGenres.size() == 0 || selGenres == null) {
+                                b.addGenre(currGenre);
+                                printGenreMenu();
+                                input = scnr.next();
+                                continue;
                             }
+                            
+                            // if in the selected list deselect otherwise add to selected list
+                            if (b.containsGenre(currGenre)) {
+                                b.removeGenre(currGenre);
+                            } else {
+                                b.addGenre(currGenre);
+                            }  
+                            
                             printGenreMenu();
                             input = scnr.next();   
                         }
@@ -163,7 +170,8 @@ public class Frontend {
                 genres = genres + genreList.get(j) + " "; // TODO fix formatting
             }
             double rating = (double) movies.get(i).getAvgVote();
-            System.out.println(i + "\t" + name + "\t" + genres + "\t" + rating);                 
+            System.out.println(index + "\t" + name + "\t" + genres + "\t" + rating);
+            index++;
         }
         
         // print commands
@@ -187,7 +195,7 @@ public class Frontend {
         int numSel = selGenres.size();
         int numGenres = allGenres.size();
         for (int i = 0; i < allGenres.size(); i++) {
-            if (selGenres.contains(allGenres.get(i))) {
+            if (b.containsGenre(allGenres.get(i))) {
                 System.out.println((i + 1) + ". [x] " + allGenres.get(i));
                 continue;
             } else {

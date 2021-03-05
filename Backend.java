@@ -55,7 +55,18 @@ public class Backend implements BackendInterface{
 							if (nextGenre.contains(",")) {
 								nextGenre = nextGenre.substring(0, nextGenre.length() - 1);
 							}
-							genres.add(nextGenre);
+							// for loop to check if genre has already been added
+							boolean added = false;
+							for (int j = 0; j < genres.size(); j++) {
+							    if (nextGenre.equalsIgnoreCase(genres.get(j))) {
+							        added = true;
+							        break;
+							    }
+							}
+							if (!added) {
+							    genres.add(nextGenre);
+
+							}
 							nextGenre = scan.next();
 						}
 						
@@ -223,9 +234,9 @@ public class Backend implements BackendInterface{
 	@Override
 	public void removeGenre(String genre) {
 		boolean flag = false;
-		for (int i = 0; i < genres.size(); i++) {
-			if (genres.get(i).equals(genre)) {
-				genres.remove(i);
+		for (int i = 0; i < genresAdded.size(); i++) {
+			if (genresAdded.get(i).equals(genre)) {
+				genresAdded.remove(i);
 				flag = true;
 				break;
 			}
@@ -288,12 +299,12 @@ public class Backend implements BackendInterface{
 		int index = startingIndex;
 		int movieNum = 0;
 		List<MovieInterface> returnList = new LinkedList();
-		for (int i = 0; i < movies.values.length; i++) {
+		for (int i = index; i < movies.values.length; i++) {
 			if (index > movies.values.length) {
 				index = 0;
 			}
 			if (movies.values[i].size() != 0) {
-				for (int j = 0; j < movies.values[i].size(); j++) {
+				for (int j = 0; j < movies.values[i].size(); j++) { // CHNAGE
 					returnList.add( (MovieInterface) movies.values[i].get(j));
 					movieNum++;
 					if (movieNum == 3) break;
@@ -326,8 +337,8 @@ public class Backend implements BackendInterface{
 	 * @return true if the the genre is located in the class, false if otherwise
 	 */
 	public boolean containsGenre(String genre) {
-		for (int i = 0; i < genres.size(); i++) {
-			if (genres.get(i).equals(genre)) {
+		for (int i = 0; i < genresAdded.size(); i++) {
+			if (genresAdded.get(i).equals(genre)) {
 				return true;
 			}
 		}
